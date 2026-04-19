@@ -13,7 +13,11 @@ sudo apt-get install -y -qq \
   texlive-fonts-recommended \
   texlive-latex-recommended \
   lmodern \
+  fonts-texgyre \
   > /dev/null
+
+# Refresh fontconfig cache so fc-list picks up the newly-installed fonts
+sudo fc-cache -f > /dev/null
 
 echo "==> Verifying..."
 command -v pandoc > /dev/null && echo "    pandoc: OK" || { echo "    pandoc: MISSING"; exit 1; }
