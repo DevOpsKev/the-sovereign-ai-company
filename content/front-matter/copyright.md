@@ -4,7 +4,7 @@
 © 2026 Kevin Ryan. All rights reserved.
 
 Published by Distributed Equity Press\
-<https://kevinryabn.io>
+<https://kevinryan.io>
 
 ---
 
