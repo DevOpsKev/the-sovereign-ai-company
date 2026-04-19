@@ -1,7 +1,6 @@
 # References & Sources
 
-[This file collects sources cited throughout the book. The previous book
-organised it by chapter — the same pattern works here. Use APA-style
+[This file collects sources cited throughout the book. Use APA-style
 references with full URLs, one per line, separated by a blank line.
 
 Example format:
@@ -15,50 +14,74 @@ here so LaTeX can line-break long references cleanly in the PDF.]
 
 -
 
-## Chapter 1: *[Chapter Title]*
+## Chapter 1: *The End of the Assumption*
 
 -
 
-## Chapter 2: *[Chapter Title]*
+## Chapter 2: *AI as Load-Bearing Infrastructure*
 
 -
 
-## Chapter 3: *[Chapter Title]*
+## Chapter 3: *The Bipolar Model Landscape*
 
 -
 
-## Chapter 4: *[Chapter Title]*
+## Chapter 4: *The Hyperscale Myth*
 
 -
 
-## Chapter 5: *[Chapter Title]*
+## Chapter 5: *Building on European Rails*
 
 -
 
-## Chapter 6: *[Chapter Title]*
+## Chapter 6: *The Taiwan Question*
 
 -
 
-## Chapter 7: *[Chapter Title]*
+## Chapter 7: *Enterprise Good Enough*
 
 -
 
-## Chapter 8: *[Chapter Title]*
+## Chapter 8: *The Hedged Model Strategy*
 
 -
 
-## Chapter 9: *[Chapter Title]*
+## Chapter 9: *The CLOUD Act vs. the AI Act*
 
 -
 
-## Chapter 10: *[Chapter Title]*
+## Chapter 10: *Data as Strategic Asset*
 
 -
 
-## Chapter 11: *[Chapter Title]*
+## Chapter 11: *The European AI Corridor*
 
 -
 
-## Chapter 12: *[Chapter Title]*
+## Chapter 12: *Retaining and Building*
+
+-
+
+## Chapter 13: *The Linux of AI Models*
+
+-
+
+## Chapter 14: *The Third Pole*
+
+-
+
+## Chapter 15: *The Steelman for Staying*
+
+-
+
+## Chapter 16: *The Four Postures in Practice*
+
+-
+
+## Chapter 17: *Monday Morning*
+
+-
+
+## Epilogue: *A Bastion for Democracy*
 
 -

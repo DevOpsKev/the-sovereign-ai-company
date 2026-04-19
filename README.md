@@ -65,7 +65,15 @@ sovereign-ai-company/
 │       └── template.tex         # LaTeX template for PDF output
 ├── content/
 │   ├── front-matter/
-│   ├── chapters/                # 12 chapters in markdown
+│   ├── parts/
+│   │   ├── part-1-the-reckoning/
+│   │   ├── part-2-the-compute-question/
+│   │   ├── part-3-the-model-layer/
+│   │   ├── part-4-data-and-jurisdiction/
+│   │   ├── part-5-talent-and-capability/
+│   │   ├── part-6-the-affirmative-vision/
+│   │   └── part-7-the-executive-playbook/
+│   ├── epilogue.md
 │   └── back-matter/
 ├── infra/
 │   ├── main.bicep               # Azure Blob Storage
@@ -78,9 +86,17 @@ sovereign-ai-company/
 │   └── install-az-cli.sh        # Install Azure CLI locally
 ├── epub.css
 ├── metadata.yaml
+├── structure.yaml               # Source of truth for part/chapter order
 └── .github/workflows/
     └── build-book.yml           # CI/CD pipeline
 ```
+
+### `structure.yaml`
+
+The book's part/chapter ordering lives in a single `structure.yaml` at the
+repo root. Both build scripts read it to assemble the book — to reorder
+chapters, add a part, or rename anything, edit `structure.yaml` and the
+corresponding file. No script changes needed.
 
 ## CI/CD
 

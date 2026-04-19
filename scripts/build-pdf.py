@@ -2,9 +2,10 @@
 """
 The Sovereign AI Company PDF Build Script
 
-Assembles front matter, chapters, and back matter into a single markdown
-file with raw LaTeX injections for structural control, then passes it
-to pandoc + XeLaTeX.
+Reads structure.yaml at the repo root to determine part/chapter ordering.
+Assembles front matter, parts (with raw-LaTeX \\part{} markers), chapters,
+epilogue, and back matter into a single markdown file with raw LaTeX
+injections for structural control, then passes it to pandoc + XeLaTeX.
 
 Usage:
   python scripts/build-pdf.py [--git-hash HASH] [--build-date DATE] [--variant screen|print|both]
@@ -20,11 +21,18 @@ import subprocess
 import sys
 from pathlib import Path
 
+try:
+    import yaml
+except ImportError:
+    print("Error: PyYAML not installed. Run: pip install pyyaml")
+    sys.exit(1)
+
 # === CONFIGURATION ===
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = REPO_ROOT / "content"
 METADATA_FILE = REPO_ROOT / "metadata.yaml"
+STRUCTURE_FILE = REPO_ROOT / "structure.yaml"
 TEMPLATE_FILE = REPO_ROOT / "build" / "pdf" / "template.tex"
 COVER_IMAGE = REPO_ROOT / "assets" / "front-cover-pdf.png"
 BACK_COVER_IMAGE = REPO_ROOT / "assets" / "back-cover-pdf.png"
@@ -36,32 +44,6 @@ MAIN_FONT = "TeX Gyre Pagella"      # Palatino — elegant prose serif
 SANS_FONT = "TeX Gyre Heros"        # Helvetica — clean headings
 FONT_SIZE = "10.5pt"
 
-# Ordered content files (relative to CONTENT_DIR)
-FRONT_MATTER = [
-    "front-matter/copyright.md",
-    "front-matter/disclaimer.md",
-    "front-matter/authors-note.md",
-]
-
-CHAPTERS = [
-    "chapters/01 - Chapter One.md",
-    "chapters/02 - Chapter Two.md",
-    "chapters/03 - Chapter Three.md",
-    "chapters/04 - Chapter Four.md",
-    "chapters/05 - Chapter Five.md",
-    "chapters/06 - Chapter Six.md",
-    "chapters/07 - Chapter Seven.md",
-    "chapters/08 - Chapter Eight.md",
-    "chapters/09 - Chapter Nine.md",
-    "chapters/10 - Chapter Ten.md",
-    "chapters/11 - Chapter Eleven.md",
-    "chapters/12 - Chapter Twelve.md",
-]
-
-BACK_MATTER = [
-    "back-matter/references-sources.md",
-]
-
 
 def check_deps():
     """Verify pandoc and xelatex are available."""
@@ -71,6 +53,15 @@ def check_deps():
         except FileNotFoundError:
             print(f"Error: {cmd} not found. Install {pkg}.")
             sys.exit(1)
+
+
+def load_structure() -> dict:
+    """Load structure.yaml from the repo root."""
+    if not STRUCTURE_FILE.exists():
+        print(f"Error: {STRUCTURE_FILE} not found.")
+        sys.exit(1)
+    with STRUCTURE_FILE.open("r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
 
 def raw_latex(code: str) -> str:
@@ -84,11 +75,9 @@ def preprocess_front_matter(content: str) -> str:
     - Strip pandoc div wrappers (::: {.class} ... :::)
     - Mark headings as unnumbered and unlisted (keep out of TOC)
     """
-    # Strip div wrappers
     content = re.sub(r'^:::\s*\{[^}]*\}\s*$', '', content, flags=re.MULTILINE)
     content = re.sub(r'^:::\s*$', '', content, flags=re.MULTILINE)
 
-    # Add {.unnumbered .unlisted} to # headings
     content = re.sub(
         r'^(#+\s+.+?)(\s*\{[^}]*\})?\s*$',
         r'\1 {.unnumbered .unlisted}',
@@ -124,14 +113,17 @@ def read_file(relative_path: str) -> str | None:
     return path.read_text(encoding="utf-8")
 
 
-def assemble_markdown() -> str:
+def assemble_markdown(structure: dict) -> str:
     """Assemble all content into a single markdown string.
 
     Structure:
       [front matter — unnumbered, not in TOC]
       \\tableofcontents
       \\mainmatter
-      [chapters]
+      [for each part:
+         \\part{Title}
+         [chapters]]
+      [epilogue — unnumbered chapter, in TOC]
       \\backmatter
       [references]
     """
@@ -139,7 +131,7 @@ def assemble_markdown() -> str:
 
     # --- Front matter ---
     print("  Front matter:")
-    for f in FRONT_MATTER:
+    for f in structure.get("front_matter", []):
         content = read_file(f)
         if content is None:
             continue
@@ -165,29 +157,66 @@ def assemble_markdown() -> str:
     # --- TOC + mainmatter switch ---
     sections.append(raw_latex("\\tableofcontents\n\\mainmatter"))
 
-    # --- Chapters ---
-    print("  Chapters:")
-    for f in CHAPTERS:
-        content = read_file(f)
-        if content is None:
-            continue
-        sections.append(content.strip())
-        print(f"    [ok] {f}")
+    # --- Parts + chapters ---
+    for part in structure.get("parts", []):
+        part_dir = part["dir"]
+        part_title = part["title"]
+        print(f"  Part {part['number']} — {part_title}:")
+
+        # Escape LaTeX special characters in the part title. Book titles
+        # shouldn't contain these, but be defensive.
+        safe_title = (
+            part_title
+            .replace("\\", "\\textbackslash{}")
+            .replace("&", "\\&")
+            .replace("%", "\\%")
+            .replace("$", "\\$")
+            .replace("#", "\\#")
+            .replace("_", "\\_")
+        )
+        sections.append(raw_latex(f"\\part{{{safe_title}}}"))
+
+        for chap_file in part["chapters"]:
+            content = read_file(f"{part_dir}/{chap_file}")
+            if content is None:
+                continue
+            sections.append(content.strip())
+            print(f"    [ok] {chap_file}")
+
+    # --- Epilogue (unnumbered, in TOC, still in mainmatter) ---
+    epilogue_file = structure.get("epilogue")
+    if epilogue_file:
+        print("  Epilogue:")
+        content = read_file(epilogue_file)
+        if content is not None:
+            # Mark the H1 as unnumbered so LaTeX doesn't prefix it and it
+            # appears in the TOC as a peer of the chapters.
+            processed = re.sub(
+                r'^(#\s+.+?)(\s*\{[^}]*\})?\s*$',
+                r'\1 {.unnumbered}',
+                content,
+                count=1,
+                flags=re.MULTILINE,
+            )
+            sections.append(processed.strip())
+            print(f"    [ok] {epilogue_file}")
 
     # --- Back matter ---
     print("  Back matter:")
     sections.append(raw_latex("\\backmatter\n\\raggedright"))
-    for f in BACK_MATTER:
+    for f in structure.get("back_matter", []):
         content = read_file(f)
         if content is None:
             continue
-        # Insert zero-width spaces after / and - in URLs so LaTeX can break them
+
+        # Insert zero-width spaces after / - _ in URLs so LaTeX can break them
         def add_url_breaks(match):
             url = match.group(0)
             url = url.replace("/", "/\u200B")
             url = url.replace("-", "-\u200B")
             url = url.replace("_", "_\u200B")
             return url
+
         content = re.sub(
             r'https?://[^\s)\]>]+',
             add_url_breaks,
@@ -199,7 +228,7 @@ def assemble_markdown() -> str:
     return "\n\n".join(sections)
 
 
-def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
+def build_pdf(variant: str, git_hash: str | None, build_date: str | None, structure: dict):
     """Build a single PDF variant."""
     is_print = variant == "print"
     suffix = "-print" if is_print else ""
@@ -211,21 +240,18 @@ def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Assemble content
     print("Scanning content...")
-    assembled = assemble_markdown()
+    assembled = assemble_markdown(structure)
 
     if not assembled.strip():
         print("ERROR: No content found.")
         sys.exit(1)
 
-    # Write assembled markdown for pandoc (and debugging)
     assembled_path = OUTPUT_DIR / "assembled.md"
     assembled_path.write_text(assembled, encoding="utf-8")
     print(f"\nAssembled markdown: {assembled_path}")
     print(f"Length: {len(assembled)} chars, {assembled.count(chr(10))} lines")
 
-    # Build pandoc command
     cmd = [
         "pandoc",
         str(assembled_path),
@@ -240,7 +266,6 @@ def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
     if METADATA_FILE.exists():
         cmd.append(f"--metadata-file={METADATA_FILE}")
 
-    # Fonts
     cmd.extend(
         [
             f"--variable=mainfont:{MAIN_FONT}",
@@ -249,7 +274,6 @@ def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
         ]
     )
 
-    # Variant-specific options
     if is_print:
         cmd.append("--variable=print:true")
     else:
@@ -268,7 +292,6 @@ def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
                 ]
             )
 
-    # Build info
     if git_hash:
         cmd.append(f"--variable=git-hash:{git_hash}")
     if build_date:
@@ -286,7 +309,6 @@ def build_pdf(variant: str, git_hash: str | None, build_date: str | None):
     size_kb = output_file.stat().st_size / 1024
     print(f"Done: {output_file} ({size_kb:.1f} KB)")
 
-    # Clean up assembled file on success
     assembled_path.unlink(missing_ok=True)
 
     return output_file
@@ -304,9 +326,11 @@ def main():
     )
     args = parser.parse_args()
 
+    structure = load_structure()
+
     variants = ["screen", "print"] if args.variant == "both" else [args.variant]
     for v in variants:
-        build_pdf(v, args.git_hash, args.build_date)
+        build_pdf(v, args.git_hash, args.build_date, structure)
 
     print(f"\n{'='*60}")
     print("  All builds complete.")

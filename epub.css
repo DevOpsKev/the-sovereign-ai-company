@@ -1,4 +1,4 @@
-/* AI Immigrants EPUB Stylesheet */
+/* The Sovereign AI Company EPUB Stylesheet */
 
 /* Force page breaks before front matter sections */
 .dedication,
@@ -48,6 +48,18 @@
 h1 {
     page-break-before: always;
     margin-top: 20%;
+}
+
+/* Part title pages — trade standard: centred, sans-serif, full page on
+   their own, with generous top margin. The .part class is applied by
+   build-epub.py when it emits the part-boundary marker. */
+h1.part {
+    page-break-before: always;
+    page-break-after: always;
+    text-align: center;
+    margin-top: 40%;
+    font-family: sans-serif;
+    font-size: 2em;
 }
 
 /* Prevent orphans and widows */

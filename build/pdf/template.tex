@@ -1,4 +1,4 @@
-% AI Immigrants LaTeX Template
+% The Sovereign AI Company — LaTeX Template
 % Trim: 5.25" x 8" — standard trade paperback
 
 $if(print)$
@@ -93,11 +93,26 @@ $endif$
   \renewcommand{\headrulewidth}{0pt}
 }
 
-% === CHAPTER STYLING ===
+% === PART & CHAPTER STYLING ===
 \usepackage{titlesec}
 
-% Suppress auto-numbering (chapter titles already include numbers)
+% secnumdepth = -1 means only parts (level -1) are numbered; chapters and
+% below are not auto-numbered. Chapter titles in the source already include
+% "Chapter N: " prefixes, so this keeps them as-is while giving us proper
+% "Part I", "Part II" numbering automatically.
 \setcounter{secnumdepth}{-1}
+
+% Part title page: centred, sans-serif, with the "Part I" label above the
+% title. Standard trade layout — full page on its own, blank verso behind.
+% Note: in titlesec [display] mode, the `format` block applies to the label
+% and the `before-code` block applies to the title; \sffamily must appear in
+% both so neither line falls back to the serif main font.
+\titleformat{\part}[display]
+  {\centering\sffamily}
+  {\Large\scshape Part \thepart}
+  {1.5em}
+  {\Huge\bfseries\sffamily}
+\titlespacing*{\part}{0pt}{80pt}{40pt}
 
 \titleformat{\chapter}[block]
   {\raggedright\sffamily\LARGE\bfseries}

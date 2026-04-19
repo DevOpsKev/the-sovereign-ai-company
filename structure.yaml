@@ -1,0 +1,71 @@
+# Structure of The Sovereign AI Company
+#
+# Single source of truth for the book's part/chapter ordering. Both
+# scripts/build-epub.py and scripts/build-pdf.py read this file to assemble
+# the book. To reorder or rename anything, edit here and the chapter file —
+# no script changes needed.
+#
+# All paths are relative to the content/ directory.
+
+front_matter:
+  - front-matter/copyright.md
+  - front-matter/disclaimer.md
+  - front-matter/authors-note.md
+
+parts:
+  - number: 1
+    title: "The Reckoning"
+    dir: parts/part-1-the-reckoning
+    chapters:
+      - 01-end-of-the-assumption.md
+      - 02-ai-as-load-bearing-infrastructure.md
+      - 03-the-bipolar-model-landscape.md
+
+  - number: 2
+    title: "The Compute Question"
+    dir: parts/part-2-the-compute-question
+    chapters:
+      - 04-the-hyperscale-myth.md
+      - 05-building-on-european-rails.md
+      - 06-the-taiwan-question.md
+
+  - number: 3
+    title: "The Model Layer"
+    dir: parts/part-3-the-model-layer
+    chapters:
+      - 07-enterprise-good-enough.md
+      - 08-the-hedged-model-strategy.md
+
+  - number: 4
+    title: "Data and Jurisdiction"
+    dir: parts/part-4-data-and-jurisdiction
+    chapters:
+      - 09-the-cloud-act-vs-the-ai-act.md
+      - 10-data-as-strategic-asset.md
+
+  - number: 5
+    title: "Talent and Capability"
+    dir: parts/part-5-talent-and-capability
+    chapters:
+      - 11-the-european-ai-corridor.md
+      - 12-retaining-and-building.md
+
+  - number: 6
+    title: "The Affirmative Vision"
+    dir: parts/part-6-the-affirmative-vision
+    chapters:
+      - 13-the-linux-of-ai-models.md
+      - 14-the-third-pole.md
+
+  - number: 7
+    title: "The Executive Playbook"
+    dir: parts/part-7-the-executive-playbook
+    chapters:
+      - 15-the-steelman-for-staying.md
+      - 16-the-four-postures-in-practice.md
+      - 17-monday-morning.md
+
+epilogue: epilogue.md
+
+back_matter:
+  - back-matter/references-sources.md
