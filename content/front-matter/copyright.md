@@ -1,5 +1,5 @@
 ::: {.copyright}
-**The Sovereign AI Company: "[Subtitle]"**
+**The Sovereign AI Company: "Why Renting Your Intelligence Is a Losing Strategy"**
 
 © 2026 Kevin Ryan. All rights reserved.
 
@@ -45,12 +45,12 @@ text intact.
 **Getting Permission**
 
 If you want to do something these licenses don't cover — including AI training
-on the book content — contact the author directly at kevin@kevinryan.io
+on the book content — contact the author directly at <kevin@kevinryan.io>
 
 ---
 
 AI-specific terms in this project are governed by the Distributed Equity
-License (DEL) v1.0. See https://distributedequity.org/license for details.
+License (DEL) v1.0. See <https://distributedequity.org/license> for details.
 
 Cover design by Kevin Ryan\
 First digital edition: 2026

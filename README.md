@@ -1,6 +1,6 @@
 # The Sovereign AI Company
 
-[One-sentence pitch for the book goes here.]
+Why renting your intelligence is a losing strategy — and how to build a company that owns its own.
 
 **Download:** [EPUB](https://saicbook.blob.core.windows.net/downloads/sovereign-ai-company.epub) | [PDF](https://saicbook.blob.core.windows.net/downloads/sovereign-ai-company.pdf)
 
@@ -37,6 +37,7 @@ python3 scripts/build-pdf.py --variant both
 ```
 
 Output:
+
 - `output/sovereign-ai-company.epub`
 - `output/sovereign-ai-company.pdf` (screen edition)
 - `output/sovereign-ai-company-print.pdf` (print edition)

@@ -1,0 +1,26 @@
+# .markdownlint.yaml
+# Rules tuned for book manuscripts — long prose lines, pandoc divs,
+# and front-matter that doesn't start with a heading.
+
+default: true
+
+# Line length — book prose naturally runs long; Markdown renderers
+# wrap it anyway, so enforcing 80 cols just fights the author.
+MD013: false
+
+# Allow raw HTML and pandoc div syntax (e.g. ::: {.copyright})
+MD033: false
+
+# Allow files to not start with a top-level heading — the copyright
+# page opens with a pandoc div, not a heading.
+MD041: false
+
+# Allow bold text used as pseudo-headings inside the copyright page
+# (**The Book Content**, **Getting Permission**, etc.) — these are
+# stylistic choices, not missing structure.
+MD036: false
+
+# Fenced code blocks without a language are fine for plain-text
+# examples (file trees, terminal output) — don't force us to tag
+# them all as ```text.
+MD040: false
