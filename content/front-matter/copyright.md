@@ -1,5 +1,5 @@
 ::: {.copyright}
-**The Sovereign AI Company: "Why Renting Your Intelligence Is a Losing Strategy"**
+**The Sovereign AI Company: "AI as Critical Infrastructure in a Fractured Global Economy"**
 
 © 2026 Kevin Ryan. All rights reserved.
 

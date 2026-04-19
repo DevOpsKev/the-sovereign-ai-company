@@ -1,6 +1,6 @@
 # The Sovereign AI Company
 
-Why renting your intelligence is a losing strategy — and how to build a company that owns its own.
+AI is critical infrastructure. As the global economy fractures, the companies that own their intelligence will define what comes next.
 
 **Download:** [EPUB](https://saicbook.blob.core.windows.net/downloads/sovereign-ai-company.epub) | [PDF](https://saicbook.blob.core.windows.net/downloads/sovereign-ai-company.pdf)
 
